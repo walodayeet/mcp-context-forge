@@ -27,6 +27,8 @@ services:
       - METRICS_AGGREGATION_ENABLED=true
       - METRICS_BUFFER_ENABLED=true
       - DB_METRICS_RECORDING_ENABLED=true
+    networks:
+      - dokploy-network # Reference the network name
     depends_on:
       db:
         condition: service_healthy
@@ -41,11 +43,15 @@ services:
       - POSTGRES_DB=mcp
     volumes:
       - mcp_pg_data:/var/lib/postgresql/data
+    networks:
+      - dokploy-network # Both services join the same network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
+networks:
+  dokploy-network:
 
 volumes:
   mcp_pg_data:
