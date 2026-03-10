@@ -93,14 +93,16 @@ ARG GRPC_PYTHON_BUILD_SYSTEM_OPENSSL='False'
 # 5) Clean caches to reduce layer size
 # ----------------------------------------------------------------------------
 # hadolint ignore=DL3041
+# Change this section:
 RUN set -euo pipefail \
-    && dnf upgrade -y \
-    && dnf install -y \
-        python${PYTHON_VERSION} \
-        python${PYTHON_VERSION}-devel \
-        binutils openssl-devel gcc postgresql-devel gcc-c++ curl \
-    && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 \
-    && dnf clean all
+         && dnf upgrade -y \
+         && dnf install -y --allowerasing \
+            python${PYTHON_VERSION} \
+            python${PYTHON_VERSION}-devel \
+            binutils openssl-devel gcc postgresql-devel gcc-c++ curl \
+         && update-alternatives --install /usr/bin/python3 python3 /usr/bin/python${PYTHON_VERSION} 1 \
+         && dnf clean all
+
 
 WORKDIR /app
 
