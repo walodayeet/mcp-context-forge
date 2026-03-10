@@ -31,7 +31,7 @@ from mcpgateway.config import settings
 # import multiprocessing
 
 # Bind to exactly what .env (or defaults) says
-bind = f"{settings.host}:{settings.port}"
+bind = "0.0.0.0:4444"
 
 workers = 2  # A positive integer generally in the 2-4 x $(NUM_CORES)
 timeout = 600  # Set a timeout of 600
