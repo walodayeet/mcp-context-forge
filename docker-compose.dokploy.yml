@@ -1,0 +1,51 @@
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: Containerfile.lite
+    container_name: mcp-gateway
+    restart: unless-stopped
+    ports:
+      - "4444:4444"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=4444
+      - HTTP_SERVER=granian
+      - GRANIAN_WORKERS=16 
+      - GUNICORN_CMD_ARGS=--bind 0.0.0.0:4444
+      - DATABASE_URL=postgresql+psycopg://postgres:YourSecureDbPass123!@db:5432/mcp
+      - DB_POOL_CLASS=queue
+      - BASIC_AUTH_PASSWORD=SecurePass123!@#
+      - JWT_SECRET_KEY=MakeSureThisIsAtLeast32CharactersLong!
+      - AUTH_ENCRYPTION_SECRET=AnotherVeryLongRandomString32Chars!
+      - PLATFORM_ADMIN_EMAIL=admin@example.com
+      - PLATFORM_ADMIN_PASSWORD=AdminPass123!@#
+      - SECURE_COOKIES=false
+      - MCPGATEWAY_UI_ENABLED=true
+      - MCPGATEWAY_ADMIN_API_ENABLED=true
+      - CACHE_TYPE=database
+      - METRICS_AGGREGATION_ENABLED=true
+      - METRICS_BUFFER_ENABLED=true
+      - DB_METRICS_RECORDING_ENABLED=true
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:15-alpine
+    container_name: mcp-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=YourSecureDbPass123!
+      - POSTGRES_DB=mcp
+    volumes:
+      - mcp_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mcp_pg_data:
