@@ -10,8 +10,8 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=4444
-      - HTTP_SERVER=granian
-      - GRANIAN_WORKERS=16 
+      - HTTP_SERVER=gunicorn
+      - GUNICORN_WORKERS=16 
       - GUNICORN_CMD_ARGS=--bind 0.0.0.0:4444
       - DATABASE_URL=postgresql+psycopg://postgres:YourSecureDbPass123!@db:5432/mcp
       - DB_POOL_CLASS=queue
