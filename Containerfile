@@ -51,7 +51,8 @@ FROM rust-builder-base AS rust-builder
 ###############################################################################
 # Main application stage
 ###############################################################################
-FROM registry.access.redhat.com/ubi10/ubi-minimal:10.1-1772441549
+# CHANGED: UBI 9 instead of UBI 10 to support x86-64-v2 (Xeon Gold 6150)
+FROM registry.access.redhat.com/ubi9/ubi-minimal:9.4
 LABEL maintainer="Mihai Criveti" \
       name="mcp/mcpgateway" \
       version="1.0.0-RC-2" \
@@ -61,9 +62,10 @@ ARG PYTHON_VERSION=3.12
 ARG GRPC_PYTHON_BUILD_SYSTEM_OPENSSL='False'
 
 # Install Python and build dependencies
+# ADDED --allowerasing to prevent curl-minimal conflicts during update
 # hadolint ignore=DL3041
-RUN microdnf update -y && \
-    microdnf install -y python${PYTHON_VERSION} python${PYTHON_VERSION}-devel gcc git openssl-devel postgresql-devel gcc-c++ && \
+RUN microdnf update -y --allowerasing && \
+    microdnf install -y --allowerasing python${PYTHON_VERSION} python${PYTHON_VERSION}-devel gcc git openssl-devel postgresql-devel gcc-c++ && \
     microdnf clean all
 
 # Set default python3 to the specified version
